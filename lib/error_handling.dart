@@ -12,31 +12,36 @@ class ErrorHandlingUtil {
     String? prefix = "",
     String? onTimeOut = "",
     String? unAuthorizedMessageError = "",
+    String? onServerErrorMessage = "",
     String? databaseMessageError = "",
   }) {
-    String _message = "";
+    String message = "";
     if (error is BasicResponse) {
-      _message = error.message ?? "";
+      message = error.message ?? "";
     } else if (error is FormatException) {
-      _message = error.toString();
+      message = error.toString();
     } else if (error is http.Response) {
       switch (error.statusCode) {
         case 401:
-          _message = unAuthorizedMessageError ?? "Unauthorized";
+          message = unAuthorizedMessageError ?? "Unauthorized";
+          break;
+        case 500:
+          message = onServerErrorMessage ??
+              "oops, something went wrong, internal server error";
           break;
         default:
-          _message = error.body;
+          message = error.body;
       }
     } else if (error is DatabaseException) {
-      _message =
+      message =
           databaseMessageError ?? "Database Error, please reset your database";
     } else {
-      _message = error.toString();
+      message = error.toString();
     }
 
-    _message = "$prefix $_message";
+    message = "$prefix $message";
 
-    return _message.replaceAll('"', "");
+    return message.replaceAll('"', "");
   }
 
   static String readMessage(http.Response response) {
