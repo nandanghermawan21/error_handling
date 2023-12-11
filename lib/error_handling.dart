@@ -11,9 +11,9 @@ class ErrorHandlingUtil {
     dynamic error, {
     String? prefix = "",
     String? onTimeOut = "",
-    String? unAuthorizedMessageError = "",
-    String? onServerErrorMessage = "",
-    String? databaseMessageError = "",
+    String? unAuthorizedMessageError,
+    String? onServerErrorMessage,
+    String? databaseMessageError,
   }) {
     String message = "";
     if (error is BasicResponse) {
