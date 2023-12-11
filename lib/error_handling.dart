@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:error_handling/basic_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite/sqflite.dart';
 
 class ErrorHandlingUtil {
   static handleApiError(
@@ -11,6 +12,7 @@ class ErrorHandlingUtil {
     String? prefix = "",
     String? onTimeOut = "",
     String? unAuthorizedMessageError = "",
+    String? databaseMessageError = "",
   }) {
     String _message = "";
     if (error is BasicResponse) {
@@ -25,6 +27,9 @@ class ErrorHandlingUtil {
         default:
           _message = error.body;
       }
+    } else if (error is DatabaseException) {
+      _message =
+          databaseMessageError ?? "Database Error, please reset your database";
     } else {
       _message = error.toString();
     }
