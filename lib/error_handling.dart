@@ -15,6 +15,7 @@ class ErrorHandlingUtil {
     String? onServerErrorMessage,
     String? databaseMessageError,
     String? databaseDataAlreadyExistError,
+    Map<String, String>? mapErrorMessage = const {},
   }) {
     String message = "";
     if (error is BasicResponse) {
@@ -24,10 +25,13 @@ class ErrorHandlingUtil {
     } else if (error is http.Response) {
       switch (error.statusCode) {
         case 401:
-          message = unAuthorizedMessageError ?? "Unauthorized";
+          message = unAuthorizedMessageError ??
+              mapErrorMessage?['unAuthorizedMessageError'] ??
+              "Unauthorized";
           break;
         case 500:
           message = onServerErrorMessage ??
+              mapErrorMessage?['onServerErrorMessage'] ??
               "oops, something went wrong, internal server error";
           break;
         default:
@@ -35,9 +39,12 @@ class ErrorHandlingUtil {
       }
     } else if (error is DatabaseException) {
       if (error.isUniqueConstraintError()) {
-        message = databaseDataAlreadyExistError ?? "Data already exist";
+        message = databaseDataAlreadyExistError ??
+            mapErrorMessage?['databaseDataAlreadyExistError'] ??
+            "Data already exist";
       } else {
         message = databaseMessageError ??
+            mapErrorMessage?['databaseMessageError'] ??
             "Database Error, please reset your database";
       }
     } else {
