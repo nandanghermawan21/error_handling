@@ -36,9 +36,10 @@ class ErrorHandlingUtil {
     } else if (error is DatabaseException) {
       if (error.isUniqueConstraintError()) {
         message = databaseDataAlreadyExistError ?? "Data already exist";
+      } else {
+        message = databaseMessageError ??
+            "Database Error, please reset your database";
       }
-      message =
-          databaseMessageError ?? "Database Error, please reset your database";
     } else {
       message = error.toString();
     }
