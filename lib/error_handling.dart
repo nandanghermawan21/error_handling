@@ -14,6 +14,7 @@ class ErrorHandlingUtil {
     String? unAuthorizedMessageError,
     String? onServerErrorMessage,
     String? databaseMessageError,
+    String? databaseDataAlreadyExistError,
   }) {
     String message = "";
     if (error is BasicResponse) {
@@ -33,6 +34,9 @@ class ErrorHandlingUtil {
           message = error.body;
       }
     } else if (error is DatabaseException) {
+      if (error.isUniqueConstraintError()) {
+        message = databaseDataAlreadyExistError ?? "Data already exist";
+      }
       message =
           databaseMessageError ?? "Database Error, please reset your database";
     } else {
